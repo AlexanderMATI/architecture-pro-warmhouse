@@ -1,0 +1,63 @@
+@startuml er-diagram
+
+entity User
+ {
+  primary_key(id) : SERIAL
+  --
+  column(email) : VARCHAR(100) UNIQUE
+  column(login) : VARCHAR(50) UNIQUE
+  column(surname) : VARCHAR(50)
+  column(name) : VARCHAR(50)
+  column(password_hash) : VARCHAR(255)
+}
+
+entity House {
+  primary_key(id) : SERIAL
+  --
+  foreign_key(user_id) : INTEGER
+  column(address) : VARCHAR(200)
+}
+
+entity Sensor {
+  primary_key(id) : SERIAL
+  --
+  foreign_key(house_id) : INTEGER
+  column(name) : VARCHAR(100)
+  column(type) : VARCHAR(50)
+  column(location) : VARCHAR(100)
+  column(status) : VARCHAR(20)
+}
+
+entity Monitoring {
+  primary_key(Id) : SERIAL
+  --
+  foreign_key(sensorId) : INTEGER
+  column(value) : DOUBLE PRECISION
+  column(status) : VARCHAR(20)
+}
+
+entity Device {
+  primary_key(Id) : SERIAL
+  --
+  foreign_key(houseId) : INTEGER
+  column(name) : VARCHAR(100)
+  column(type) : VARCHAR(50)
+  column(location) : VARCHAR(100)
+  column(status) : VARCHAR(20)
+}
+
+entity Command {
+  primary_key(Id) : SERIAL
+  --
+  foreign_key(deviceId) : INTEGER
+  column(command) : VARCHAR(50)
+  column(parameters) : TEXT
+}
+
+User ||--o{ House : "один (и только один) к нулю или многим"
+House ||--o{ Sensor : "один (и только один) к нулю или многим"
+House ||--o{ Device : "один (и только один) к нулю или многим"
+Sensor ||--o{ Monitoring : "один (и только один) к нулю или многим"
+Device ||--{ Command : "один ко многим"
+
+@enduml
