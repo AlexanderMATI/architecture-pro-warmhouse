@@ -6,7 +6,7 @@ Person(user, "Пользователь")
 System_Boundary(WarmHouse, "WarmHouse") {
     Container(apiGateway, "API Gateway", "", "Единая точка входа")
     Container(temperatureApi, "Temperature API", "", "Рандомизирует данные о температуре")
-    Container(MonitoringService, "Telemetry Service", "", "Собирает, хранит, предоставляет данные о телеметрии")
+    Container(MonitoringService, "Monitoring Service", "", "Собирает, хранит, предоставляет данные о телеметрии")
     Container(deviceService, "Device Service", "", "Управляет устройствами")
 }
 
@@ -21,6 +21,7 @@ Rel(temperatureApi, Sensors, "Получает данные от датчико�
 Rel(deviceService, database, "Читает/пишет устройства")
 Rel(MonitoringService, database, "Читает/пишет телеметрию")
 Rel(MonitoringService, temperatureApi, "Запрашивает показания")
+
 
 
 
