@@ -68,7 +68,10 @@
 
 **Диаграмма контейнеров (Containers)**
 
-Добавьте диаграмму.
+Диаграмма контейнеров - диаграмма приложений и хранилищ данных. Показывает высокоуровневые технологические блоки. 
+[Диаграмма контейнеров С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/schemas/warmhouse_containers.puml)
+
+https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/schemas/warmhouse_containers.puml
 
 **Диаграмма компонентов (Components)**
 
