@@ -71,15 +71,13 @@
 Диаграмма контейнеров - диаграмма приложений и хранилищ данных. Показывает высокоуровневые технологические блоки. 
 [Диаграмма контейнеров С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/schemas/warmhouse_containers.puml)
 
-https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/schemas/warmhouse_containers.puml
-
 **Диаграмма компонентов (Components)**
 
-Добавьте диаграмму для каждого из выделенных микросервисов.
+Диаграмма компонентов представляет содержимое отдельных контейнеров. Всего их два - контейнер мониторинга и контейнер устройств.
+[Диаграмма компонента device С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/schemas/warmhouse_component_device.puml)
 
-**Диаграмма кода (Code)**
+[Диаграмма компонента monitoring С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/schemas/warmhouse_component_monitoring.puml)
 
-Добавьте одну диаграмму или несколько.
 
 # Задание 3. Разработка ER-диаграммы
 
