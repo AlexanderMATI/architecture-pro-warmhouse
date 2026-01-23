@@ -60,7 +60,7 @@
 Чтобы добавить ссылку в файл Readme.md, нужно использовать синтаксис Markdown. Это делают так:
 
 
-[Диаграмма контекста С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/schemas/warmhouse_context.puml)
+[Диаграмма контекста С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/diagramm/warmhouse_context.puml)
 
 
 # Задание 2. Проектирование микросервисной архитектуры
@@ -70,15 +70,15 @@
 
 Диаграмма контейнеров - диаграмма приложений и хранилищ данных. Показывает высокоуровневые технологические блоки. 
 
-[Диаграмма контейнеров С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/schemas/warmhouse_containers.puml)
+[Диаграмма контейнеров С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/diagramm/warmhouse_containers.puml)
 
 **Диаграмма компонентов (Components)**
 
 Диаграмма компонентов представляет содержимое отдельных контейнеров. Всего их два - контейнер мониторинга и контейнер устройств.
 
-[Диаграмма компонента device С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/schemas/warmhouse_component_device.puml)
+[Диаграмма компонента device С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/diagramm/warmhouse_component_device.puml)
 
-[Диаграмма компонента monitoring С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/schemas/warmhouse_component_monitoring.puml)
+[Диаграмма компонента monitoring С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/diagramm/warmhouse_component_monitoring.puml)
 
 
 # Задание 3. Разработка ER-диаграммы
@@ -87,7 +87,7 @@ ER-диаграмма показывает, с какими данными ну�
 
 ERD представлен в нотации Мартина.
 
-[ER-диаграмма С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/schemas/ER_diagram.puml)
+[ER-диаграмма С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/diagramm/ER_diagram.puml)
 
 # Задание 4. Создание и документирование API
 
