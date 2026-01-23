@@ -62,24 +62,28 @@ func generateTemperature(location, DeviceID strin {
 	value := 18.0 + rand.Float64()*10.0
 
 	if location == "" {
-		switch DeviceID {
+		switch sensorID {
 		case "1":
-			location = "Спальня"
+			location = "Living Room"
 		case "2":
-			location = "Кухня"
+			location = "Bedroom"
+		case "3":
+			location = "Kitchen"
 		default:
-			location = "неизвестно"
+			location = "Unknown"
 		}
 	}
 
-	if DeviceID == "" {
+	if sensorID == "" {
 		switch location {
-		case "Спальня":
-			DeviceID = "1"
-		case "Кухня":
-			DeviceID = "2"
+		case "Living Room":
+			sensorID = "1"
+		case "Bedroom":
+			sensorID = "2"
+		case "Kitchen":
+			sensorID = "3"
 		default:
-			DeviceID = "0"
+			sensorID = "0"
 		}
 	}
 
@@ -93,3 +97,4 @@ func generateTemperature(location, DeviceID strin {
 		Description: location,
 	}
 }
+
