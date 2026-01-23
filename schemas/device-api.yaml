@@ -1,0 +1,316 @@
+openapi: 3.0.3
+info:
+  title: Device-API
+  description: API для устройств WarmHouse
+  contact:
+    name: Демьяненко Александр
+servers:
+  - url: http://localhost:8080/api/v1
+
+paths:
+  /devices:
+    get:
+      summary: Получить список всех устройств
+      description: Возвращает список всех устройств пользователя
+      operationId: getDevices
+      tags:
+        - Devices
+      parameters:
+        - name: house_id
+          in: query
+          description: ID дома
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+    post:
+      summary: Создать новое устройство
+      description: Регистрирует новое устройство в системе
+      operationId: createDevice
+      tags:
+        - Devices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceCreate'
+      responses:
+        '201':
+          description: Устройство успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /devices/{deviceId}:
+    get:
+      summary: Получить устройство по ID
+      description: Возвращает информацию об устройстве
+      operationId: getDeviceById
+      tags:
+        - Devices
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: ID устройства
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+    put:
+      summary: Обновить устройство
+      description: Обновляет информацию об устройстве
+      operationId: updateDevice
+      tags:
+        - Devices
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: ID устройства
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceUpdate'
+      responses:
+        '200':
+          description: Устройство обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
+    delete:
+      summary: Удалить устройство
+      description: Удаляет устройство из WarmHouse
+      operationId: deleteDevice
+      tags:
+        - Devices
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: ID устройства
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Устройство удалено
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Устройство успешно удалено
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: Управление отоплением
+      description: Включает или выключает отопление для указанного устройства
+      operationId: controlHeating
+      tags:
+        - Devices
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: ID устройства отопления
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DevicesControlRequest'
+      responses:
+        '200':
+          description: Команда успешно выполнена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevicesControlResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+
+components:
+  schemas:
+    Device:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        house_id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Термодатчик"
+        type:
+          type: string
+          example: "Датчик тепла"
+        location:
+          type: string
+          example: "Спальня"
+        status:
+          type: string
+          enum: [активный, неактивный, ошибка]
+          example: "активный"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    
+    DeviceCreate:
+      type: object
+      required:
+        - house_id
+        - type
+        - name
+        - location
+      properties:
+        house_id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Термодатчик"
+        location:
+          type: string
+          example: "Спальня"
+        configuration:
+          type: object
+          additionalProperties: true
+    
+    DeviceUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Термодатчик"
+        location:
+          type: string
+          example: "Спальня"
+        status:
+          type: string
+          enum: [активный, неактивный, ошибка]
+          example: "активный"
+        configuration:
+          type: object
+          
+    DevicesControlRequest:
+      type: object
+      properties:
+        action:
+          type: string
+          enum: [on, off, set_temperature]
+          example: "on"
+        target_temperature:
+          type: number
+          format: float
+          description: Целевая температура
+          example: 19.5
+    
+    DevicesControlResponse:
+      type: object
+      properties:
+        device_id:
+          type: integer
+          example: 1
+        action:
+          type: string
+          example: "on"
+        status:
+          type: string
+          enum: [успех, не удалось]
+          example: "успех"
+        timestamp:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Error message"
+
+
+  responses:
+    BadRequest:
+      description: Неверный запрос
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    NotFound:
+      description: Ресурс не найден
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    InternalServerError:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Error message"

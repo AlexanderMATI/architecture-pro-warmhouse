@@ -1,0 +1,152 @@
+openapi: 3.0.3
+info:
+  title: Telemetry Service API
+  description: API для систем мониторинга за датчиками
+  version: 1.0.0
+  contact:
+    name: Демьяненко Александр
+servers:
+  - url: http://localhost:8080/api/v1
+
+paths:
+   Telemetry:
+    post:
+      summary: Отправить данные мониторинга
+      description: Сохраняет данные от устройства
+      operationId: sendTelemetry
+      tags:
+        - Telemetry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas TelemetryData'
+      responses:
+        '201':
+          description: Данные успешно сохранены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas TelemetryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+   Telemetry/devices/{deviceId}:
+    get:
+      summary: Мониторинг устройства
+      description: Возвращает данные мониторинга для указанного устройства
+      operationId: getDevice Telemetry
+      tags:
+        - Telemetry
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          description: ID устройства
+          schema:
+            type: integer
+        - name: from
+          in: query
+          description: Начальная дата
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: Конечная дата
+          schema:
+            type: string
+            format: date-time
+
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas TelemetryData'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  schemas:
+   TelemetryData:
+      type: object
+      required:
+        - device_id
+        - value
+        - unit
+        - timestamp
+      properties:
+        device_id:
+          type: integer
+          example: 1
+        module_id:
+          type: integer
+          example: 1
+        value:
+          type: number
+          format: float
+          example: 19.5
+        unit:
+          type: string
+          example: "°C"
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties: true
+          example:
+            location: "Living Room"
+            sensor_type: "temperature"
+    
+   TelemetryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        message:
+          type: string
+          example:  Telemetry data saved successfully"
+        timestamp:
+          type: string
+          format: date-time
+
+   Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Error message"
+
+  responses:
+    BadRequest:
+      description: Неверный запрос
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    NotFound:
+      description: Ресурс не найден
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    InternalServerError:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  
