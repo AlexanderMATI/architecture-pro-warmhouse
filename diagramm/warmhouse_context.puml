@@ -1,0 +1,16 @@
+@startuml context
+!include <C4/C4_Context>
+
+Person(user, "Пользователь", "Управляет отоплением, следит за температурой")
+Person(admin, "Администратор", "Подключает датчики к системе, управляет системой")
+
+System(warmhouse, "Warmhouse system", "Монолит на Go")
+System_Ext(API, "Temperature API", "Отображает показания датчиков")
+
+SystemDb(database, "Database PostgreSQL", "База данных для хранения информации о датчиках и данных о температуре")
+
+Rel(user, warmhouse, "Управляет датчиками и мониторит температуру", "REST")
+Rel(warmhouse, API, "Просматривает данные с датчиков", "REST")
+Rel(warmhouse, database, "Работает с данными", "SQL")
+Rel(admin, warmhouse, "Управление системой, добавление новых датчиков", "SQL")
+@enduml

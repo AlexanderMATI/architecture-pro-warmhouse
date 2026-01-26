@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  telemetry-service:
+    build:
+      context: ./Telemetry
+    container_name: telemetry
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+
+  device-service:
+    build:
+      context: ./Device
+    container_name: device
+    ports:
+      - "5002:5002"
+    restart: unless-stopped
