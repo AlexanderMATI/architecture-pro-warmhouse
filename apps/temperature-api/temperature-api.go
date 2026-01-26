@@ -9,13 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Temperature struct {
+type TempData struct {
 	Value       float64   `json:"value"`
+	Unit        string    `json:"unit"`
 	Timestamp   time.Time `json:"timestamp"`
 	Location    string    `json:"location"`
 	Status      string    `json:"status"`
-	DeviceID    string    `json:"Device_id"`
-	DeviceType  string    `json:"Device_type"`
+	SensorID    string    `json:"sensor_id"`
+	SensorType  string    `json:"sensor_type"`
 	Description string    `json:"description"`
 }
 
@@ -31,11 +32,11 @@ func main() {
 	router.GET("/temperature", func(c *gin.Context) {
 		location := c.Query("location")
 		if location == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"Ошибка": "Требуется указание локации"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Требуется указание местоположения"})
 			return
 		}
 
-		data := generateTemperature(location, "")
+		data := generateTemperatureData(location, "")
 
 		c.JSON(http.StatusOK, data)
 	})
@@ -43,23 +44,23 @@ func main() {
 	router.GET("/temperature/:id", func(c *gin.Context) {
 		id := c.Param("id")
 		if id == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"Ошибка": "Требуется ID устройства"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Требуется указать id сенсора"})
 			return
 		}
 
-		data := generateTemperature("", id)
+		data := generateTemperatureData("", id)
 
 		c.JSON(http.StatusOK, data)
 	})
 
 	if err := router.Run(":8081"); err != nil {
-		log.Fatalf("Ошибка запуска сервера: %v", err)
+		log.Fatalf("Failed to start server: %v", err)
 	}
 }
 
-func generateTemperature(location, DeviceID strin {
-	rand.Seed(time.Now().UnixNano())
-	value := 18.0 + rand.Float64()*10.0
+func generateTemperatureData(location, sensorID string) TempData {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	value := 18.0 + r.Float64()*20.0
 
 	if location == "" {
 		switch sensorID {
@@ -86,15 +87,15 @@ func generateTemperature(location, DeviceID strin {
 			sensorID = "0"
 		}
 	}
-
-	retu{
+	
+	return TempData{
 		Value:       value,
+		Unit:        "°C",
 		Timestamp:   time.Now(),
 		Location:    location,
-		Status:      "активный",
-		DeviceID:    DeviceID,
-		DeviceType:  "Термодатчик",
+		Status:      "active",
+		SensorID:    sensorID,
+		SensorType:  "Термодатчик",
 		Description: location,
 	}
 }
-
