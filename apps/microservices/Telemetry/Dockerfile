@@ -6,4 +6,5 @@ COPY app.py .
 RUN pip install flask
 
 EXPOSE 5002
-CMD ["go", "telemetry.go"]
+
+CMD ["./telemetry.go"]
