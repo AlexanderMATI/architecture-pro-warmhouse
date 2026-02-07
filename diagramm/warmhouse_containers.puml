@@ -1,27 +1,42 @@
 @startuml containers
 !include <C4/C4_Container>
 
+skinparam {
+    backgroundColor #FAFAFA
+    roundCorner 20
+    shadowing true
+    wrapWidth 200
+}
+
 Person(user, "Пользователь")
 
 System_Boundary(WarmHouse, "WarmHouse") {
     Container(apiGateway, "API Gateway", "", "Единая точка входа")
-    Container(temperatureApi, "Temperature API", "", "Рандомизирует данные о температуре")
-    Container(MonitoringService, "Monitoring Service", "", "Собирает, хранит, предоставляет данные о телеметрии")
+    Container(user_service, "User service", "Go", "Регистрация, аутентификация")
+    ContainerDb(user_db, "UserDB", "PostgreSQL", "Хранит информацию о профилях")
+    Container(telemetry_service, "Telemetry Service", "Go", "Собирает, хранит, предоставляет данные о телеметрии")
+    ContainerDb(telemetry_db, "TelemetryDB", "TimescaleDB", "Хранит исторические показания датчиков")
     Container(deviceService, "Device Service", "", "Управляет устройствами")
+    ContainerDb(device_db, "Device DB", "PostgreSQL", "Хранит информацию об устройствах")
+    Container(control_service, "Control service", "Go", "Отправляет команды устройствам")
+    Container(message_broker, "Message broker", "", "Обеспечивает доставку команд")
 }
 
-ContainerDb(database, "DataBase PostgreSQL", "", "База данных для хранения информации о датчиках и данных о температуре")
-System_Ext(Sensors, "Temperature Sensors", "Датчики температуры в доме")
+System_Ext(smart_device, "Smart device")
 
-Rel(user, apiGateway, "Просматривает данные, управляет системой",)
-Rel(apiGateway, MonitoringService, "Получает данные мониторинга")
+Rel(user, apiGateway, "Просматривает данные, управляет системой")
+
+Rel(apiGateway, user_service, "Передает данные об регистрации или аутентификации", "HTTP")
+Rel(apiGateway, telemetry_service, "Получает данные мониторинга")
 Rel(apiGateway, deviceService, "Управляет устройствами")
-Rel(apiGateway, temperatureApi, "Запрашивает температуру")
-Rel(temperatureApi, Sensors, "Получает данные от датчиков")
-Rel(deviceService, database, "Читает/пишет устройства")
-Rel(MonitoringService, database, "Читает/пишет телеметрию")
-Rel(MonitoringService, temperatureApi, "Запрашивает показания")
+Rel(apiGateway, control_service, "Передает команды", "HTTP")
+Rel(user_service, user_db, "Записывает или считывает данные", "TCP/IP")
+Rel(deviceService, device_db, "Записывает или считывает данные", "TCP/IP")
+Rel(telemetry_service, telemetry_db, "Записывает или считывает данные", "TCP/IP")
 
+Rel(control_service, message_broker, "Отправляет команду", "AMQP/MQTT")
+Rel(telemetry_service, message_broker, "Подписывается на данные телеметрии", "AMQP/MQTT")
 
+Rel(smart_device, message_broker, "Отправляет данные телеметрии и получает команды", "AMQP/MQTT")
 
 @enduml
