@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
 
   device_service:
-    build: ./device_service
+    build: ./device
     container_name: smarthome_device_service
     depends_on:
       postgres: { condition: service_healthy }
@@ -46,7 +46,7 @@ services:
       - smarthome_network
 
   telemetry-service:
-    build: ./telemetry_service
+    build: ./telemetry
     container_name: smarthome_telemetry_service
     depends_on:
       postgres: { condition: service_healthy }
