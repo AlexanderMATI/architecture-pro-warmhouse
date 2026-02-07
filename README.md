@@ -80,6 +80,9 @@
 
 [Диаграмма компонента monitoring С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/diagramm/warmhouse_component_monitoring.puml)
 
+[Диаграмма кода](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/diagramm/code.puml)
+
+
 
 # Задание 3. Разработка ER-диаграммы
 
