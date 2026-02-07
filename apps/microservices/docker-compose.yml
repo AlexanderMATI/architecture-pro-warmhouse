@@ -1,18 +1,94 @@
-version: '3.9'
+version: '3.8'
 
 services:
-  telemetry-service:
-    build:
-      context: ./Telemetry
-    container_name: telemetry
+  postgres:
+    image: postgres:16-alpine
+    container_name: smarthome_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: smarthome
     ports:
-      - "5001:5001"
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d smarthome"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - smarthome_network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: smarthome_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - smarthome_network
     restart: unless-stopped
 
-  device-service:
-    build:
-      context: ./Device
-    container_name: device
+  device_service:
+    build: ./device_service
+    container_name: smarthome_device_service
+    depends_on:
+      postgres: { condition: service_healthy }
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/smarthome?sslmode=disable
     ports:
-      - "5002:5002"
+      - "8082:8082"
     restart: unless-stopped
+    networks:
+      - smarthome_network
+
+  telemetry-service:
+    build: ./telemetry_service
+    container_name: smarthome_telemetry_service
+    depends_on:
+      postgres: { condition: service_healthy }
+      rabbitmq: { condition: service_started }
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/smarthome?sslmode=disable
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
+    networks:
+      - smarthome_network
+
+  device_simulator:
+    build: ./device_simulator
+    container_name: smarthome_device_simulator
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    restart: unless-stopped
+    networks:
+      - smarthome_network
+
+  app:
+    build: ../smart_home
+    container_name: smarthome-app
+    depends_on:
+      postgres: { condition: service_healthy }
+      telemetry-service: { condition: service_started } 
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/smarthome
+      - TEMPERATURE_API_URL=http://telemetry_service:8083
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks:
+      - smarthome_network
+
+volumes:
+  postgres_data:
+
+networks:
+  smarthome_network:
+    driver: bridge
