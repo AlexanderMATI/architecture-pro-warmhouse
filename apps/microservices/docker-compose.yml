@@ -60,9 +60,9 @@ services:
     networks:
       - smarthome_network
 
-  device_simulator:
-    build: ./device_simulator
-    container_name: smarthome_device_simulator
+  device_virtual:
+    build: ./device_virtual
+    container_name: smarthome_device_virtual
     depends_on:
       - rabbitmq
     environment:
@@ -92,3 +92,4 @@ volumes:
 networks:
   smarthome_network:
     driver: bridge
+
