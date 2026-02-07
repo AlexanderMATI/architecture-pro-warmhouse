@@ -1,0 +1,22 @@
+@startuml code
+!include <C4/C4_Component>
+
+actor User
+participant "SensorHandler" as Handler
+participant "TemperatureService" as TempService
+participant "Database" as DB
+participant "Temperature API" as TempAPI
+
+User -> Handler: GET /api/v1/sensors/:id
+Handler -> DB: GetSensorByID(id)
+DB --> Handler: Sensor
+alt Sensor type is Temperature
+    Handler -> TempService: GetTemperatureByID(sensorID)
+    TempService -> TempAPI: GET /temperature/:id
+    TempAPI --> TempService: TemperatureResponse
+    TempService --> Handler: TemperatureResponse
+    Handler -> Handler: Update sensor with real-time data
+end
+Handler --> User: Sensor updated temperature
+
+@enduml
