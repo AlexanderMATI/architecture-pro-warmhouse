@@ -92,6 +92,11 @@
 
 [Диаграмма компонента monitoring С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/diagramm/warmhouse_component_monitoring.puml)
 
+**Диаграмма кода**
+
+[Диаграмма компонента monitoring С4](https://github.com/AlexanderMATI/architecture-pro-warmhouse/blob/warmhouse/diagramm/code.puml)
+
+
 
 # Задание 3. Разработка ER-диаграммы
 
@@ -109,7 +114,8 @@ ERD представлен в нотации Мартина.
 
 ### 2. Документация API
 
-[Документация](https://github.com/AlexanderMATI/architecture-pro-warmhouse/tree/main/schemas)
+Здесь приложите ссылки на документацию API для микросервисов, которые вы спроектировали в первой части проектной работы. Для документирования используйте Swagger/OpenAPI или AsyncAPI.
+[API](https://github.com/AlexanderMATI/architecture-pro-warmhouse/tree/warmhouse/schemas)
 
 
 # Задание 5. Работа с docker и docker-compose
@@ -121,7 +127,7 @@ ERD представлен в нотации Мартина.
 
 # **Задание 6. Разработка MVP**
 
-Сделаны два микросервиса на Python и Go. Для обеспечения взаимодействия пока не хватает навыков, надеюсь этого будет достаточно
+Сделаны два микросервиса на Python и Go
 
 [Микросервисы](https://github.com/AlexanderMATI/architecture-pro-warmhouse/tree/warmhouse/apps/microservices)
 

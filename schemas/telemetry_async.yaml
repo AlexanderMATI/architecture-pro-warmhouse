@@ -1,0 +1,44 @@
+openapi: 3.0.3
+info:
+  title: Async Telemetry Service API
+  description: Асинхронное API для сбора данных мониторинга через Kafka
+  version: 2.0.0
+
+paths:
+  /telemetry:
+    post:
+      summary: Асинхронно отправить данные мониторинга
+      description: Публикует данные телеметрии в топик Kafka
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelemetryData'
+      responses:
+        '202':  
+          description: Данные приняты в очередь для обработки
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelemetryAcceptResponse' 
+
+  /telemetry/devices/{deviceId}:
+    get:
+      summary: Получить обработанные данные устройства
+      description: Запрашивает данные.
+
+components:
+  schemas:
+    TelemetryAcceptResponse: 
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Telemetry data accepted for processing"
+        timestamp:
+          type: string
+          format: date-time
+        kafka_topic:
+          type: string
+          example: "raw-telemetry"

@@ -1,10 +1,32 @@
-FROM golang:1.22-alpine AS builder
+# Build stage
+FROM golang:1.24.4-alpine AS builder
 
+# Set working directory
 WORKDIR /app
-COPY app.py .
 
-RUN pip install flask
+# Copy go.mod and go.sum files
+COPY go.mod go.sum ./
 
-EXPOSE 5002
+# Copy the source code
+COPY . .
 
-CMD ["./telemetry.go"]
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux GO111MODULE=auto go build -o telemetry
+
+# Runtime stage
+FROM alpine:latest
+
+# Install necessary runtime dependencies
+RUN apk --no-cache add ca-certificates tzdata
+
+# Set working directory
+WORKDIR /app
+
+# Copy the binary from the builder stage
+COPY --from=builder /app/telemetry .
+
+# Expose the port the app runs on
+EXPOSE 8083
+
+# Command to run the application
+CMD ["./telemetry"]
